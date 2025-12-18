@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Dune: War for Arrakis - Atreides Automa</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#2b2520">
+</head>
+
+<body>
+
+    <!-- Setup Screen Overlay -->
+    <div id="setupScreen" class="setup-screen">
+        <div class="setup-content">
+            <h1>Dune: War for Arrakis</h1>
+            <h2>Atreides Automa</h2>
+            <img src="baron_splash.png" alt="Baron Vladimir Harkonnen" class="splash-img">
+
+            <div class="rules-summary">
+                <h3>Cómo Jugar</h3>
+                <ol>
+                    <li>Selecciona la dificultad (Objetivo de Presciencia).</li>
+                    <li>En el turno del Automa, revela una carta de decisión.</li>
+                    <li>Ejecuta la primera acción posible (de arriba a abajo).</li>
+                    <li>Gestiona la Presciencia y evita que alcance su objetivo.</li>
+                </ol>
+            </div>
+
+            <div class="input-group">
+                <label for="difficulty">Dificultad (Presciencia Objetivo)</label>
+                <select id="difficulty">
+                    <option value="15">Muy Difícil (15)</option>
+                    <option value="17">Difícil (17)</option>
+                    <option value="20" selected>Normal (20)</option>
+                    <option value="22">Fácil (22)</option>
+                </select>
+            </div>
+
+            <button onclick="Game.init()">Iniciar Partida</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <h1>Barón vs Atreides</h1>
+        </div>
+        <div class="header-right">
+            <button class="icon-btn" onclick="UI.toggleModal('rulesModal')" aria-label="Reglamento">📖</button>
+            <button class="icon-btn" onclick="UI.toggleModal('iconographyModal')" aria-label="Iconografía">📜</button>
+            <button class="icon-btn" onclick="UI.toggleModal('anatomyModal')" aria-label="Ayuda">ℹ️</button>
+            <button class="icon-btn" onclick="UI.toggleMenu()" aria-label="Menu">☰</button>
+        </div>
+    </header>
+
+    <!-- (Status Bar & Main content untouched) -->
+
+    <!-- ... existing modals ... -->
+
+    <!-- Rules Modal -->
+    <div id="rulesModal" class="modal" onclick="if(event.target === this) UI.toggleModal('rulesModal')">
+        <div class="modal-content large-modal">
+            <h3>Reglamento Completo: Modo Solitario</h3>
+            <div id="rulesContent" class="rules-container">
+                <!-- Content will be injected or hardcoded here -->
+                <p>Cargando reglamento...</p>
+            </div>
+            <button class="close-btn" onclick="UI.toggleModal('rulesModal')">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Iconography Modal -->
+    <div id="iconographyModal" class="modal" onclick="if(event.target === this) UI.toggleModal('iconographyModal')">
+        <div class="modal-content" style="max-width: 95%; padding: 10px;">
+            <h3 style="margin-bottom: 10px;">Referencia de Iconos</h3>
+            <img src="iconography.jpg" alt="Guía de Iconografía"
+                style="width: 100%; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+            <button class="close-btn" onclick="UI.toggleModal('iconographyModal')">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- (Status Bar & Main content untouched) -->
+
+    <!-- ... existing modals ... -->
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-group">
+            <span class="label">Ronda</span>
+            <span class="value" id="roundDisplay">1</span>
+        </div>
+        <div class="status-group score-group">
+            <span class="label">Presciencia</span>
+            <div class="score-controls">
+                <button onclick="Game.updateScore(-1)">-</button>
+                <span class="value" id="scoreDisplay">0</span>
+                <button onclick="Game.updateScore(1)">+</button>
+
+            </div>
+            <span class="sub-label" id="targetDisplay">/ 20</span>
+        </div>
+    </div>
+
+    <main>
+        <!-- Info Grid (Objectives & Tactics) -->
+        <div class="info-grid">
+            <div class="info-card objective-card" onclick="UI.expandCard('objective')">
+                <div class="card-header">
+                    <span>Objetivo</span>
+                    <small>Tap para detalles</small>
+                </div>
+                <div class="card-content">
+                    <img id="objImg" src="" alt="Objetivo Actual" class="mini-card-img">
+                </div>
+            </div>
+
+            <div class="info-card tactic-card">
+                <div class="card-header">
+                    <span>Tácticas</span>
+                </div>
+                <div class="card-content tactics-list">
+                    <div class="tactic-item">
+                        <span class="icon">🛡️</span>
+                        <img id="defSietchImg" class="tactic-mini" alt="Defensivo">
+                    </div>
+                    <div class="tactic-item">
+                        <span class="icon">⚔️</span>
+                        <img id="offSietchImg" class="tactic-mini" alt="Ofensivo">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Action Area -->
+        <div class="action-area">
+            <div id="deckArea" class="deck-container">
+                <div id="emptyState" class="empty-state">
+                    <p>Mazo de Decisión</p>
+                    <span id="deckCount">18 Cartas</span>
+                    <button class="cta-btn" onclick="Game.drawCard()">Revelar Carta</button>
+                </div>
+
+                <div id="activeCardContainer" class="card-wrapper hidden">
+                    <div style="position: relative;">
+                        <img id="activeCardImg" src="" alt="Carta de Decisión" class="main-card-img">
+                    </div>
+
+                    <div class="card-actions column-actions">
+                        <button class="cta-btn secondary" onclick="UI.toggleModal('detailsModal')">📜 Ver
+                            Explicación</button>
+                        <button class="secondary-btn" onclick="Game.drawCard()">Siguiente Carta</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Controls -->
+    <footer>
+        <button class="footer-btn" onclick="UI.toggleModal('casualtyModal')">Tabla de Bajas</button>
+        <button class="footer-btn action" onclick="Game.nextRound()">Fin de Ronda</button>
+    </footer>
+
+    <!-- Modals -->
+    <div id="detailsModal" class="modal" onclick="if(event.target === this) UI.toggleModal('detailsModal')">
+        <div class="modal-content">
+            <h3>Explicación de Carta</h3>
+            <div id="detailsContent" class="details-list">
+                <!-- Populated by JS -->
+            </div>
+            <button class="close-btn" onclick="UI.toggleModal('detailsModal')">Cerrar</button>
+        </div>
+    </div>
+
+    <div id="casualtyModal" class="modal" onclick="if(event.target === this) UI.toggleModal('casualtyModal')">
+        <div class="modal-content">
+            <h3>Prioridad de Bajas</h3>
+            <ul class="dune-list">
+                <li><strong>>1 Líder:</strong> Retira 1 (genérico primero).</li>
+                <li><strong>1 Élite:</strong> Reemplaza por Regular.</li>
+                <li><strong>1 Élite Especial:</strong> Reemplaza por Regular.</li>
+                <li><strong>1 Líder + Regulares:</strong> Retira 1 Regular.</li>
+                <li><strong>1 Líder + 1 Regular:</strong> Retira el Líder.</li>
+                <li><strong>Solo Regulares:</strong> Retira 1 Regular.</li>
+            </ul>
+            <hr>
+            <h4>Criterios de Batalla</h4>
+            <p>
+                ⚔️ <strong>Inicio:</strong> Ataca solo si tiene <strong>5+ dados</strong>.<br>
+                ⚔️ <strong>Continuar:</strong> Solo si sus dados >= tus dados.<br>
+                🛡️ <strong>Defensa:</strong> En Sietch, suma el bono del Sietch a sus dados.
+            </p>
+            <button class="close-btn" onclick="UI.toggleModal('casualtyModal')">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Expanded Objective Modal -->
+    <div id="objectiveModal" class="modal" onclick="if(event.target === this) UI.toggleModal('objectiveModal')">
+        <div class="modal-content">
+            <h3>Objetivo Actual</h3>
+            <img id="objImgLarge" src="" alt="Objetivo Grande" style="width: 100%; border-radius: 8px;">
+            <button class="close-btn" onclick="UI.toggleModal('objectiveModal')">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Anatomy Modal -->
+    <div id="anatomyModal" class="modal" onclick="if(event.target === this) UI.toggleModal('anatomyModal')">
+        <div class="modal-content">
+            <h3>Anatomía de una Carta</h3>
+            <div class="anatomy-guide">
+                <div class="anatomy-section top">
+                    <span class="badge">1. Sección Superior</span>
+                    <p>Se ejecuta si se cumple la <strong>Condición</strong> (Bandera).</p>
+                    <small>Si no hay condición, suele ser la acción prioritaria.</small>
+                    <div class="tie-note">🔸 Iconos bajo línea punteada: <strong>Desempate</strong>.</div>
+                </div>
+                <div class="anatomy-section mid">
+                    <span class="badge">2. Sección Central</span>
+                    <p>Se ejecuta si la 1ª Sección <strong>NO</strong> se cumple o no es posible.</p>
+                </div>
+                <div class="anatomy-section bot">
+                    <span class="badge">3. Sección Inferior</span>
+                    <p>Se ejecuta <strong>SIEMPRE</strong> después de completar la acción de arriba (1ª o 2ª).</p>
+                    <small>Suele ser Presciencia, Despliegue, o mantenimiento.</small>
+                </div>
+            </div>
+            <button class="close-btn" onclick="UI.toggleModal('anatomyModal')">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Video Modal (Victory/Defeat) -->
+    <div id="videoModal" class="modal" style="background: #000; z-index: 3000;">
+        <div class="modal-content"
+            style="background: #000; border: none; padding: 0; width: 100%; height: 100%; max-width: 100%; max-height: 100%; display: flex; justify-content: center; align-items: center;">
+            <video id="victoryVideo" controls style="max-width: 100%; max-height: 100%; width: auto; height: auto;">
+                <source src="victory.mp4" type="video/mp4">
+                Tu navegador no soporta video.
+            </video>
+            <button class="close-btn"
+                style="position: absolute; top: 20px; right: 20px; width: auto; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid #fff;"
+                onclick="UI.closeVideo()">Cerrar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
