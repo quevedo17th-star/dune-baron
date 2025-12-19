@@ -871,10 +871,9 @@ footer {
     }
 
     .mini-card-img {
-        max-height: 90px;
-        /* Reduced to save space */
+        max-height: 120px;
+        /* Reverted to 120px per user request */
         object-fit: contain;
-        /* Show full image, don't crop */
         object-position: center;
         width: 100%;
         display: block;
@@ -942,6 +941,60 @@ footer {
     .footer-btn {
         padding: 12px;
         font-size: 0.75rem;
+    }
+
+    /* Setup Screen Optimization */
+    .setup-screen {
+        align-items: flex-start;
+        /* Allow scrolling from top */
+        overflow-y: auto;
+        padding: 20px 0;
+    }
+
+    .setup-content {
+        padding: 10px;
+        width: 100%;
+    }
+
+    .setup-content h1 {
+        font-size: 1.2rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .setup-content h2 {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .splash-img {
+        max-height: 120px;
+        /* Reduce image height significantly */
+        width: auto;
+        margin: 10px 0;
+    }
+
+    .rules-summary {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .rules-summary h3 {
+        font-size: 0.8rem;
+    }
+
+    .rules-summary ol {
+        font-size: 0.75rem;
+        padding-left: 15px;
+    }
+
+    .input-group {
+        margin-bottom: 1rem;
+    }
+
+    .setup-content button {
+        padding: 12px;
+        font-size: 1rem;
+        margin-top: 10px;
     }
 }
 
