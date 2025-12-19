@@ -11,7 +11,7 @@ const Game = (function () {
     // Verified logic based on analysis of 1.jpg/png to 20.png
     const cardsData = [
         {
-            file: "1.jpg",
+            file: "1.png",
             cond: "2+ Gusanos en juego",
             ifTrue: "Ejecutar 2 veces: Ataque de Gusano O Movimiento de Legión. (Prioridad: Desierto)",
             ifFalse: "Colocar 2 Fichas de Gusano (Sietch Defensivo)",

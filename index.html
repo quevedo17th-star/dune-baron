@@ -9,7 +9,10 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <meta name="theme-color" content="#2b2520">
+    <link rel="manifest" href="manifest.json">
 </head>
+
+
 
 <body>
 
@@ -246,6 +249,15 @@
         </div>
     </div>
 
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW registered!', reg.scope))
+                    .catch(err => console.log('SW failed!', err));
+            });
+        }
+    </script>
     <script src="script.js"></script>
 </body>
 
