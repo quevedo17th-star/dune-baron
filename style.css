@@ -32,7 +32,10 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    height: 100dvh;
     overflow: hidden;
+    position: fixed;
+    width: 100%;
 }
 
 /* Animations */
@@ -813,6 +816,133 @@ footer {
     border-radius: 4px;
     font-size: 0.8rem;
     color: #dcb386;
+}
+
+/* --- Mobile Optimization (Small Screens) --- */
+@media (max-width: 600px) {
+
+    /* Compact Header to save vertical space */
+    header {
+        padding: 8px 12px;
+    }
+
+    header h1 {
+        font-size: 0.9rem;
+    }
+
+    .icon-btn {
+        font-size: 1.3rem;
+        padding: 4px;
+    }
+
+    /* Compact Status Bar */
+    .status-bar {
+        padding: 6px 12px;
+    }
+
+    .status-group .label {
+        font-size: 0.65rem;
+    }
+
+    .status-group .value {
+        font-size: 1.1rem;
+    }
+
+    .score-controls button {
+        width: 28px;
+        height: 28px;
+    }
+
+    /* Compact Info Grid */
+    .info-grid {
+        gap: 8px;
+    }
+
+    .info-card {
+        padding: 8px;
+    }
+
+    .card-header {
+        margin-bottom: 5px;
+    }
+
+    .card-header span {
+        font-size: 0.7rem;
+    }
+
+    .mini-card-img {
+        max-height: 90px;
+        /* Reduced to save space */
+        object-fit: contain;
+        /* Show full image, don't crop */
+        object-position: center;
+        width: 100%;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .tactic-mini {
+        width: 40px;
+        /* Smaller tactic icons */
+    }
+
+    .tactics-list {
+        gap: 8px;
+    }
+
+    .tactic-item {
+        padding: 4px;
+    }
+
+    /* Action Area & Main Card */
+    main {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .action-area {
+        min-height: auto;
+        /* Remove forced height */
+        padding: 0;
+        display: flex;
+        align-items: flex-start;
+        /* Align top to prevent pushing down */
+    }
+
+    .card-wrapper {
+        gap: 10px;
+    }
+
+    .main-card-img {
+        max-height: 50vh;
+        /* Strictly limit height */
+        width: auto;
+        border-radius: 8px;
+    }
+
+    .cta-btn {
+        padding: 12px 20px;
+        margin-top: 10px;
+        width: 100%;
+        max-width: 250px;
+        /* Prevent overly wide buttons */
+    }
+
+    .card-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .card-actions button {
+        width: 100%;
+    }
+
+    /* Footer */
+    .footer-btn {
+        padding: 12px;
+        font-size: 0.75rem;
+    }
 }
 
 /* --- Tablet Landscape & Desktop Optimization --- */
