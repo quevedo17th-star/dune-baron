@@ -31,11 +31,13 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
-    position: fixed;
+    min-height: 100vh;
+    min-height: 100dvh;
+    /* overflow: hidden;  <-- Removed to allow scroll */
+    /* position: fixed; <-- Removed to allow scroll */
     width: 100%;
+    overflow-y: auto;
+    /* Enable vertical scroll */
 }
 
 /* Animations */
@@ -77,9 +79,13 @@ body {
     background: rgba(43, 37, 32, 0.98);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    /* Changed from center to prevent top cutoff */
     z-index: 1000;
     transition: opacity 0.3s ease;
+    overflow-y: auto;
+    /* Enable scroll within setup screen */
+    padding: 20px 0;
 }
 
 .setup-screen.hidden {
@@ -92,6 +98,8 @@ body {
     padding: 20px;
     max-width: 400px;
     width: 90%;
+    margin: auto;
+    /* Center vertically if space allows */
 }
 
 .setup-content h1 {
@@ -941,6 +949,81 @@ footer {
     .footer-btn {
         padding: 12px;
         font-size: 0.75rem;
+    }
+
+    /* Modal Variants */
+    .large-modal {
+        max-width: 900px;
+        width: 95%;
+    }
+
+    /* Rules Gallery */
+    .rules-gallery {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding-bottom: 20px;
+        width: 100%;
+    }
+
+    .rules-gallery.single-view {
+        /* Removed align-items: center to let children fill width */
+        justify-content: flex-start;
+        min-height: 300px;
+    }
+
+    .rules-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        position: sticky;
+        top: 0;
+        background: #1a1a1a;
+        padding: 10px 0;
+        z-index: 10;
+        border-bottom: 1px solid #333;
+    }
+
+    .nav-btn {
+        background: var(--dune-sand);
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: bold;
+        color: #1a1a1a;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .nav-btn:disabled {
+        background: #444;
+        color: #888;
+        cursor: not-allowed;
+    }
+
+    .page-indicator {
+        color: var(--dune-sand);
+        font-family: 'Cinzel', serif;
+        font-size: 1rem;
+    }
+
+    .rules-page {
+        text-align: center;
+        width: 100%;
+        display: block;
+        /* Removed flex to avoid layout bugs */
+    }
+
+    .rules-page img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        display: inline-block;
+        /* Works with text-align: center */
+        margin: 0 auto;
+        /* Horizontal centering fallback */
     }
 
     /* Setup Screen Optimization */

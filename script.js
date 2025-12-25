@@ -9,208 +9,210 @@ const Game = (function () {
 
     // Mapped to files: 1.png to 20.png
     // Verified logic based on analysis of 1.jpg/png to 20.png
+    // Mapped to files: 1.png to 20.png
     const cardsData = [
         {
             file: "1.png",
-            cond: "2+ Gusanos en juego",
-            ifTrue: "Ejecutar 2 veces: Ataque de Gusano O Movimiento de Legión. (Prioridad: Desierto)",
-            ifFalse: "Colocar 2 Fichas de Gusano (Sietch Defensivo)",
-            add: "Jugar Carta de Objetivo"
+            cond: "2+ Gusanos en juego (incl. Hacedor Salvaje)",
+            ifTrue: "<ul><li><b>Acción:</b> Gusano Ataca o se Mueve.</li><li><b>Prioridad:</b> Gusano más cercano al Polo Norte.</li><li><b>Objetivo:</b> Si ataca, elige la Legión enemiga de mayor valor (evitando Desierto Profundo).</li></ul>",
+            ifFalse: "<ul><li><b>Acción:</b> Colocar 2 Fichas de Gusano.</li><li><b>Ubicación:</b> En un desierto (Prioridad: Polo Norte).</li></ul>",
+            add: "<ul><li>Ejecutar 1ª acción de la Carta de Objetivo.</li><li>Atreides recibe +1 Dado/Escudo en próximo combate.</li></ul>"
         },
         {
             file: "5.png", // Corrected per user: Card 2 is Wild Maker
-            cond: "Wild Maker en juego",
-            ifTrue: "Wild Maker: Ataque / Movimiento (Prioridad: Hagga Basin)",
-            ifFalse: "Colocar Wild Maker -> Desierto (Prioridad: Hagga Basin)",
-            add: "Estación Ecológica + Ciclar + Combate +1"
+            cond: "Hacedor Salvaje en juego",
+            ifTrue: "<ul><li><b>Acción:</b> Hacedor Salvaje Ataca o se Mueve.</li><li><b>Prioridad:</b> Hacia Hagga Basin.</li></ul>",
+            ifFalse: "<ul><li><b>Acción:</b> Colocar Hacedor Salvaje en un desierto.</li><li><b>Criterio:</b> Cerca de una Legión (Prioridad: Hagga Basin).</li></ul>",
+            add: "<ul><li>Revelar Estación de Pruebas Ecológicas y mover marcador.</li><li>Atreides recibe +1 Dado.</li></ul>"
         },
         {
             file: "3.png",
-            cond: "Verde ≥ 3 Y Rojo ≥ 3",
-            ifTrue: "Mover Legión (Montaña -> Erg). Desempate: Polo Norte.",
-            ifFalse: "Líder (Paul) + Fichas Despliegue -> Sietch Ofensivo",
-            add: "Tanque Regeneración: Líder -> Sietch Defensivo (Paul > Gurney > Stilgar)"
+            cond: "Presciencia Verde ≥ 3 Y Rojo ≥ 3",
+            ifTrue: "<ul><li><b>Acción:</b> Mover Legión en Montaña hacia un Desierto.</li><li><b>Prioridad:</b> Polo Norte.</li></ul>",
+            ifFalse: "<ul><li><b>Acción:</b> Colocar Líder (Paul) + 2 Fichas de Despliegue.</li><li><b>Ubicación:</b> En un Sietch Ofensivo.</li></ul>",
+            add: "<ul><li>Reclutar Líder en Sietch Defensivo junto con 1 unidad regular.</li><li><b>Prioridad:</b> Paul > Gurney > Stilgar > Otros.</li></ul>"
         },
         {
             file: "4.png",
-            cond: "Gusano en juego",
-            ifTrue: "2x (Ataque Gusano o Mover Legión) -> Prioridad: Polo Norte",
-            ifFalse: "Colocar 3 Unidades -> Imperial Basin",
-            add: "Resolver Presciencia (Ojo) + Combate +1"
+            cond: "Gusano de Arena en juego",
+            ifTrue: "<ul><li><b>Acción:</b> Gusano Ataca o Mueve.</li><li><b>Criterio:</b> Atacar Legión en Desierto Profundo.</li><li><b>Prioridad:</b> Polo Norte.</li></ul>",
+            ifFalse: "<ul><li><b>Opción A:</b> Mover 3 Legiones hacia Imperial Basin.</li><li><b>Opción B:</b> Mover 1 Legión desde Sietch Ofensivo hacia Imperial Basin.</li></ul>",
+            add: "<ul><li>Ejecutar acción de la Carta de Objetivo.</li><li>Atreides recibe +1 Dado.</li></ul>"
         },
         {
             file: "5.png",
-            cond: "Wild Maker en tablero",
-            ifTrue: "Wild Maker Ataca o Mueve (Cerca Hagga Basin)",
-            ifFalse: "Colocar Wild Maker en Desierto (Cerca Hagga Basin)",
-            add: "Revelar Estación Ecológica + Mover Marcador"
+            cond: "Hacedor Salvaje en juego",
+            ifTrue: "<ul><li><b>Acción:</b> Hacedor Salvaje Ataca o se Mueve hacia una Legión en Imperial Basin.</li></ul>",
+            ifFalse: "<ul><li><b>Acción:</b> Colocar Hacedor Salvaje en desierto cercano a una Legión en Imperial Basin.</li></ul>",
+            add: "<ul><li>Revelar Estación Ecológica.</li><li>Atreides recibe +1 Dado.</li></ul>"
         },
         {
             file: "6.png",
-            cond: "Amarillo ≥ 3",
-            ifTrue: "Colocar Jessica + 1 Ficha Despliegue -> Sietch Defensivo",
-            ifFalse: "Colocar Stilgar + 2 Fichas + 1 Unidad -> Desierto (Cerca Leigón, Pri: Hagga Basin)",
-            add: "Ciclar Carta (Remplazar) + Combate +1"
+            cond: "Presciencia Amarillo ≥ 3",
+            ifTrue: "<ul><li><b>Acción:</b> Colocar a la Reverenda Madre Jessica.</li><li><b>Ubicación:</b> Considerando un Sietch Defensivo.</li></ul>",
+            ifFalse: "<ul><li><b>Acción:</b> Colocar Stilgar + 2 Unidades Regulares + 1 Unidad de Élite.</li><li><b>Ubicación:</b> Una Meseta cercana a Hagga Basin.</li></ul>",
+            add: "Revelar Estación Ecológica."
         },
         {
             file: "7.png",
-            cond: "Verde ≥ 3",
-            ifTrue: "Colocar Muad'Dib + 2 Unidades -> Sietch Ofensivo",
-            ifFalse: "Colocar 2 Fichas Despliegue -> Asentamiento Hagga Basin",
-            add: "Objetivo + Combate +1 Dado"
+            cond: "Presciencia Verde ≥ 3",
+            ifTrue: "<ul><li><b>Acción:</b> Colocar al Líder Muad'Dib + 1 Unidad de Élite en un Sietch Ofensivo.</li></ul>",
+            ifFalse: "<ul><li><b>Acción:</b> Mover 2 Legiones hacia Hagga Basin.</li><li><b>Prioridad:</b> Mover la Legión de mayor rango hacia Hagga Basin.</li></ul>",
+            add: "<ul><li>Ejecutar acción de la Carta de Objetivo.</li><li>Atreides recibe +1 Dado.</li></ul>"
         },
         {
             file: "8.png",
-            cond: "Rojo ≥ 3",
-            ifTrue: "Colocar Chani + 2 Fichas -> Sietch Ofensivo",
-            ifFalse: "Colocar Wild Maker -> Desierto (Cerca Imperial Basin)",
-            add: "Revelar Estación Ecológica + Combate +1 Dado"
+            cond: "Presciencia Rojo ≥ 3",
+            ifTrue: "<ul><li><b>Acción:</b> Colocar a la Líder Chani + 2 Unidades Regulares en un Sietch Ofensivo.</li></ul>",
+            ifFalse: "<ul><li><b>Acción:</b> Colocar Hacedor Salvaje en desierto cercano a una Legión en Imperial Basin.</li><li><b>Desempate:</b> Polo Norte.</li></ul>",
+            add: "<ul><li>Revelar Estación Ecológica.</li><li>Atreides recibe +1 Dado.</li></ul>"
         },
         {
             file: "9.png",
-            cond: "Rojo ≥ 3 Y Amarillo ≥ 3 Y Gurney",
-            ifTrue: "Mover Gurney + Legión -> Asentamiento Polo Norte",
-            ifFalse: "Colocar Gurney + 2 Fichas -> Desierto (Cerca Sietch Ofensivo)",
-            add: "Tanque Regeneración"
+            cond: "Presciencia Rojo ≥ 3 Y Amarillo ≥ 3 Y Gurney disponible",
+            ifTrue: "<ul><li><b>Acción:</b> Mover a Gurney hacia el Polo Norte.</li></ul>",
+            ifFalse: "<ul><li><b>Acción:</b> Colocar a Gurney + 2 Unidades de Élite considerando un Desierto.</li><li><b>Prioridad:</b> Hacia Imperial Basin.</li></ul>",
+            add: "<ul><li>Reclutar Líder: Coloca un líder (Paul > Gurney > Stilgar) en el Sietch Defensivo.</li></ul>"
         },
         {
             file: "10.png",
-            cond: "Verde ≥ 3 O Amarillo ≥ 3",
-            ifTrue: "Asalto (3 Dados): Retirar 1 Pieza HK por Éxito (Ornitóptero > Cosechadora > Unidad)",
-            ifFalse: "Colocar Ficha de Bloqueo [+Ban]",
-            add: "Jugar Objetivo + Combate +1 Dado"
+            cond: "Presciencia Verde ≥ 3 O Amarillo ≥ 3 (Bandera)",
+            ifTrue: "<ul><li><b>Ataque de Vehículos (3 dados):</b> Por cada Impacto/Especial, elimina un vehículo tuyo en Desierto/Desierto Profundo.</li><li><b>Prioridad:</b> Cosechadora > Ornitóptero > Carryall.</li></ul>",
+            ifFalse: "<ul><li><b>Influencia Política:</b> Mover el marcador de Prohibición/Imperium hacia abajo.</li></ul>",
+            add: "<ul><li>Jugar 1ª acción de la Carta de Objetivo.</li><li>Harkonnen obtiene +1 Escudo en su defensa.</li></ul>"
         },
         {
             file: "11.png",
-            cond: "Marcadores ≥ 3",
-            ifTrue: "Asalto (x3 Dado Verde): Retirar Unidad por Acierto (Cerca Polo Norte)",
-            ifFalse: "Colocar 2 Fichas Gusano -> Desierto (Cerca Legión Fuerte)",
-            add: "Acciones + Combate +2 Dados"
+            cond: "TODOS los marcadores de Presciencia ≥ 3 (Bandera)",
+            ifTrue: "<ul><li><b>Combate:</b> El Automa ataca. Fuerza = X + número del Round actual.</li><li><b>Objetivo:</b> Una Legión, Líder o Líder Nombrado.</li><li><b>Prioridad:</b> Imperial Basin.</li></ul>",
+            ifFalse: "<ul><li><b>Señal de Gusano:</b> Colocar 2 Fichas de Señal de Gusano.</li><li><b>Ubicación:</b> Desierto adyacente a un Sietch cercano a Imperial Basin.</li></ul>",
+            add: "<ul><li>Revelar Estación Ecológica + colocar 2 Fichas de Señal de Gusano en desierto cercano a un Sietch Defensivo.</li><li><b>Prioridad:</b> Polo Norte.</li></ul>"
         },
         {
             file: "12.png",
-            cond: "Verde ≥ 3 Y Amarillo ≥ 3 Y Rojo ≥ 3",
-            ifTrue: "Asalto (3 Dados): Retirar 1 Unidad por Éxito/Estrella (Prioridad: Hagga Basin)",
-            ifFalse: "Colocar 2 Fichas Gusano -> Desierto con Legión (Prioridad: Hagga Basin)",
-            add: "Ganar 1 Acción + Combate +2 Dados"
+            cond: "TODOS los marcadores de Presciencia ≥ 3 (Bandera)",
+            ifTrue: "<ul><li><b>Ataque Selectivo (3 Dados):</b> Por cada Impacto/Especial, elimina un Líder o una Unidad propia.</li><li><b>Prioridad:</b> Hagga Basin.</li></ul>",
+            ifFalse: "<ul><li><b>Señal de Gusano:</b> Colocar 2 Fichas de Gusano.</li><li><b>Ubicación:</b> En área con una Legión (Prioridad: Hagga Basin).</li></ul>",
+            add: "<ul><li>Resolver carta de Presciencia (Acciones/Track).</li><li>Atreides obtiene +2 Dados más.</li></ul>"
         },
         {
             file: "13.png",
-            cond: "Verde ≥ 3 O Rojo ≥ 3",
-            ifTrue: "Retirar Ornitóptero (Cerca Imperial Basin)",
-            ifFalse: "Colocar Líder + 2 Fichas -> Sietch Ofensivo",
-            add: "Objetivo + Combate +1 Dado"
+            cond: "Presciencia Verde ≥ 3 O Rojo ≥ 3 (Bandera)",
+            ifTrue: "<ul><li><b>Sabotaje:</b> Una Legión Atreides interactúa/elimina un Vehículo tuyo.</li><li><b>Prioridad:</b> Imperial Basin.</li></ul>",
+            ifFalse: "<ul><li><b>Despliegue:</b> Colocar una Legión con 2 Fichas de Despliegue en un Sietch Ofensivo.</li></ul>",
+            add: "<ul><li>Jugar Carta de Objetivo.</li><li>Tú obtienes +1 Escudo.</li></ul>"
         },
         {
             file: "14.png",
-            cond: "Verde ≥ 3 Y Amarillo ≥ 3 Y Rojo ≥ 3",
-            ifTrue: "Colocar Alia + 2 Fichas -> Sietch Defensivo",
-            ifFalse: "Colocar 2 Fichas Gusano -> Desierto -> Montaña (Imperial Basin)",
-            add: "Retirar Estación Ecológica -> 2 Fichas Gusano (Sietch Defensivo)"
+            cond: "TODOS los marcadores de Presciencia ≥ 3 (Bandera)",
+            ifTrue: "<ul><li><b>Despliegue Alia:</b> Colocar a Alia + 1 Regular + 1 Élite en Sietch Defensivo.</li><li><b>Ubicación:</b> En un Sietch Defensivo.</li></ul>",
+            ifFalse: "<ul><li><b>Señal de Gusano:</b> Colocar 2 Fichas de Señal de Gusano.</li><li><b>Ubicación:</b> Desierto cercano a un Sietch en Imperial Basin.</li></ul>",
+            add: "<ul><li>Revelar Estación Ecológica + colocar 2 Señales de Gusano cerca de un Sietch Defensivo.</li><li><b>Foco:</b> Polo Norte.</li></ul>"
         },
         {
             file: "15.png",
-            cond: "Verde ≥ 3 Y Amarillo ≥ 3 Y Rojo ≥ 3",
-            ifTrue: "Ataque Gusano x2 (Polo Norte)",
-            ifFalse: "Colocar 2 Fichas Gusano -> Desierto (Polo Norte)",
-            add: "Estación Ecológica + Ficha BG + Combate +2 Dados"
+            cond: "TODOS los marcadores de Presciencia ≥ 3 (Bandera)",
+            ifTrue: "<ul><li><b>Ataque de Gusanos:</b> Colocar 2 Gusanos de Arena en una zona de Desierto donde haya unidades.</li><li><b>Prioridad:</b> Polo Norte.</li></ul>",
+            ifFalse: "<ul><li><b>Señal de Gusano:</b> Colocar 2 Fichas.</li><li><b>Ubicación:</b> Desierto adyacente a un Sietch Defensivo (Prioridad: Polo Norte).</li></ul>",
+            add: "<ul><li>Revelar Estación Ecológica Y el Automa gana una ficha Bene Gesserit.</li><li>Tú obtienes +2 Escudos.</li></ul>"
         },
         {
             file: "16.png",
-            cond: "Amarillo ≥ 3 O Rojo ≥ 3",
-            ifTrue: "Reclutar Líder Harkonnen (Prioridad Pista)",
-            ifFalse: "Mover Legión -> Polo Norte (+Tormenta)",
-            add: "Objetivo + Combate +1 Dado"
+            cond: "Presciencia Amarillo ≥ 3 O Rojo ≥ 3 (Bandera)",
+            ifTrue: "<ul><li><b>Recuperar/Reclutar Líder:</b> Colocar un Líder en un Asentamiento.</li><li><b>Prioridad:</b> Thufir Hawat > Otros > Feyd-Rautha > Gaius Helen Mohiam.</li></ul>",
+            ifFalse: "<ul><li><b>Tormenta y Movimiento:</b> Mover una Legión al Polo Norte Y colocar una Tormenta de Coriolis.</li></ul>",
+            add: "<ul><li>Jugar carta de Objetivo.</li><li>Tú obtienes +1 Escudo.</li></ul>"
         },
         {
             file: "17.png",
-            cond: "Verde ≥ 3 Y Amarillo ≥ 3 Y Rojo ≥ 3",
-            ifTrue: "Usar Atómicas -> Sietch Ofensivo",
-            ifFalse: "Colocar Líder + 2 Fichas Despliegue -> Sietch Ofensivo",
-            add: "Retirar Estación Ecológica -> Colocar 2 Fichas Gusano (Sietch Defensivo / Polo Norte)"
+            cond: "TODOS los marcadores de Presciencia ≥ 3 (Bandera)",
+            ifTrue: "<ul><li><b>Atómicas de Familia:</b> Usar la ficha de Atómicas sobre un Sietch Ofensivo (Bloquea/Destruye zona).</li></ul>",
+            ifFalse: "<ul><li><b>Despliegue:</b> Colocar un Líder + 2 Fichas de Despliegue en un Sietch Ofensivo.</li></ul>",
+            add: "<ul><li>Revelar Estación Ecológica + 2 Señales de Gusano cerca de un Sietch Defensivo (Foco: Polo Norte).</li></ul>"
         },
         {
             file: "18.png",
-            cond: "Verde ≥ 3 Y Amarillo ≥ 3 Y Rojo ≥ 3",
-            ifTrue: "Cosechadora en Desierto (con <= 2 Legiones) -> Retirar/Atacar",
-            ifFalse: "Colocar 2 Fichas Gusano -> Desierto (Sietch Ofensivo)",
-            add: "Retirar Estación Ecológica + Carta Presciencia + Combate +2"
+            cond: "TODOS los marcadores de Presciencia ≥ 3 (Bandera)",
+            ifTrue: "<ul><li><b>Refuerzo desde Sietch:</b> Dos Legiones Atreides con fuerza ≤ 2 se mueven desde un Sietch Defensivo.</li></ul>",
+            ifFalse: "<ul><li><b>Señal de Gusano:</b> Colocar 2 Fichas.</li><li><b>Ubicación:</b> Desierto cercano a un Sietch Ofensivo (Prioridad: Polo Norte).</li></ul>",
+            add: "<ul><li>Revelar Estación Ecológica Y Resolver carta de Presciencia (Acciones).</li><li>Atreides obtiene +2 dados.</li></ul>"
         },
         {
             file: "19.png",
-            cond: "Marcadores ≥ 6",
-            ifTrue: "Ajustar Marcadores (Bajar Alto / Subir Bajo) + Ficha BG",
-            ifFalse: "Retirar/Mover Cubo Rojo",
-            add: "Tanque Regeneración (Líder -> Sietch Ofensivo)"
+            cond: "Presciencia Verde ≥ 6 O Amarillo ≥ 6 O Rojo ≥ 6 (Bandera)",
+            ifTrue: "<ul><li><b>Manipulación Política:</b> Si el Automa tiene ficha BG, la gasta para subir 1 nivel el marcador de Presciencia más bajo.</li></ul>",
+            ifFalse: "<ul><li><b>Sabotaje:</b> Eliminar un Dado Rojo tuyo (Pierdes una acción).</li></ul>",
+            add: "<ul><li><b>Reclutar Líder:</b> Colocar un Líder de la reserva en el Sietch Defensivo.</li><li><b>Prioridad:</b> Paul > Gurney > Stilgar.</li></ul>"
         },
         {
             file: "20.png",
-            cond: "Marcadores ≥ 6",
-            ifTrue: "Ataque Legión (Prioridad: Hagga Basin)",
-            ifFalse: "Siguiente Turno: Jugar Dado más a la Derecha (No carta)",
-            add: "Tanque Regeneración (Líder -> Sietch Ofensivo)"
+            cond: "TODOS los marcadores de Presciencia ≥ 6 (Bandera)",
+            ifTrue: "<ul><li><b>Combate Agresivo:</b> Si combate vs zona con Líder o >2 Legiones, añade 1 Éxito Automático. (Prioridad: Hagga Basin).</li><li><b>Prioridad:</b> Hagga Basin.</li></ul>",
+            ifFalse: "<ul><li><b>Restricción Táctica:</b> En tu próximo turno, debes jugar obligatoriamente tu dado más a la derecha.</li></ul>",
+            add: "Tanque de Regeneración (Líder -> Sietch Ofensivo)."
         }
     ];
 
     const TOTAL_DECISION_CARDS = cardsData.length;
 
     // Mapped to files: obj_1.png to obj_8.png
+    // Mapped to files: obj_1.png to obj_8.png
     const objectivesData = [
         {
             id: 1,
             title: "Recolectores de Rocío",
-            desc: "Legiones en 3+ regiones de Meseta",
+            desc: "<b>Victoria:</b> Legiones en 3+ regiones de Meseta.",
             file: "obj_1.png",
-            logic: "Colocar 1 Unidad (Meseta) -> x2 Colocar Despliegue (Desierto con Legión) -> Gratis: Colocar 1 Unidad (Meseta)"
+            logic: "<ul><li><b>Movimiento IA:</b> Mover Legiones a Mesetas.</li><li><b>Alternativa:</b> Si no, colocar gusanos en rutas hacia Mesetas.</li><li><b>Acercamiento:</b> Mover legiones acercándose a Mesetas.</li><li><b>Foco:</b> Hagga Basin.</li></ul>"
         },
         {
             id: 2,
             title: "¡Paul el 'Mahdi'!",
-            desc: "Revela Sietch donde está Paul",
+            desc: "<b>Victoria:</b> Revelar un Sietch en la misma región donde se encuentre Paul.",
             file: "obj_2.png",
-            logic: "Revelar Sietch donde está Paul (Acción Gratuita)"
+            logic: "<ul><li><b>Movimiento IA:</b> Prioriza mover legiones hacia la ubicación de Paul para protegerlo y asegurar la zona.</li><li><b>Efecto:</b> Si Paul llega a un Sietch oculto, este se revela (Acción Gratuita).</li></ul>"
         },
         {
             id: 3,
             title: "Disciplina del Agua",
-            desc: "Paul/Jessica en Desierto (sin Sietch)",
+            desc: "<b>Victoria:</b> Paul y Jessica están en regiones de Desierto Profundo (sin Sietch).",
             file: "obj_3.png",
-            logic: "Mover Paul y/o Jessica -> Sietch (Si están en Desierto Profundo sin Sietch)"
+            logic: "<ul><li><b>Movimiento IA:</b> Mover a Paul y/o Jessica hacia el desierto abierto (profundo), alejándolos de los Sietchs.</li><li><b>Estrategia:</b> Busca mantenerlos en movimiento en zonas hostiles.</li></ul>"
         },
         {
             id: 4,
-            title: "Trampas de Viento",
-            desc: "Legiones en 3+ regiones de Montaña",
+            title: "Nuevas Trampas de Viento",
+            desc: "<b>Victoria:</b> Hay Legiones Atreides en 3 o más regiones de Montaña.",
             file: "obj_4.png",
-            logic: "Colocar 1 Unidad (Montaña) -> x2 Colocar Despliegue -> Gratis: Colocar 1 Unidad (Montaña)"
+            logic: "<ul><li><b>Movimiento IA:</b> Mover Legiones directamente a Montañas. Si no, colocar gusanos para proteger el camino.</li><li><b>Acercamiento:</b> Mover legiones acercándose a Montañas libres.</li></ul>"
         },
         {
             id: 5,
             title: "Gusanos Atrofiados",
-            desc: "Legiones en 2+ Erg Menor",
+            desc: "<b>Victoria:</b> Hay Legiones Atreides en 2 o más regiones de Erg Menor.",
             file: "obj_5.png",
-            logic: "Colocar Unidad -> Erg Menor -> Colocar Unidad (Donde haya Unidad en Erg Menor)"
+            logic: "<ul><li><b>Movimiento IA:</b> Prioridad absoluta de mover legiones hacia los Ergs Menores.</li><li><b>Alternativa:</b> Si no pueden entrar, se mueven para acercarse lo máximo posible.</li><li><b>Foco:</b> Polo Norte.</li></ul>"
         },
         {
             id: 6,
-            title: "Entrenamiento BG",
-            desc: "Jessica y Paul en mismo Sietch",
+            title: "Entrenamiento Bene Gesserit",
+            desc: "<b>Victoria:</b> Jessica y Paul están en el mismo Sietch.",
             file: "obj_6.png",
-            logic: "Revelar Sietch Paul -> Mover Jessica con Paul -> Colocar 2 Tokens Despliegue (Sietch Defensivo)"
+            logic: "<ul><li><b>Movimiento IA:</b> Mover a Paul hacia la ubicación de Jessica y a Jessica hacia Paul.</li><li><b>Objetivo:</b> Que ambos terminen su movimiento en el mismo Sietch (base segura).</li></ul>"
         },
         {
             id: 7,
-            title: "Guerra del Desierto",
-            desc: "Legiones en 4+ Desiertos (sin Sietch)",
+            title: "La Guerra del Desierto",
+            desc: "<b>Victoria:</b> Hay Legiones Atreides en 4 o más regiones de Desierto (sin Sietch).",
             file: "obj_7.png",
-            logic: "Mover Unidad -> Desierto ocupado (x2)"
+            logic: "<ul><li><b>Movimiento IA:</b> Expansión agresiva. Mover legiones a cualquier zona de desierto vacía.</li><li><b>Estrategia:</b> Prioriza la cantidad de zonas ocupadas sobre la calidad de la defensa.</li></ul>"
         },
         {
             id: 8,
-            title: "Lisan Al-Gaib",
-            desc: "Revelar 2 fichas Despliegue con Paul",
+            title: "El Lisan Al-Gaib",
+            desc: "<b>Victoria:</b> Revelar 2 Fichas de Despliegue en la región de Paul.",
             file: "obj_8.png",
-            logic: "Revelar Sietch Paul -> 2 Tokens Despliegue -> Ciclar 1 Token"
+            logic: "<ul><li><b>Movimiento IA:</b> La prioridad no es el movimiento geográfico, sino la concentración de fuerzas.</li><li><b>Acción:</b> Utiliza acciones de despliegue (++) en la zona de Paul para fortificarlo.</li></ul>"
         }
     ];
 
@@ -427,17 +429,34 @@ const UI = (function () {
         toggleModal('detailsModal');
     };
 
+    let activeDecisionCard = null; // Store current decision card
+
     function renderDecisionCard(card) {
+        activeDecisionCard = card;
         const container = document.getElementById('activeCardContainer');
         const empty = document.getElementById('emptyState');
         const img = document.getElementById('activeCardImg');
 
-        // Target the modal content div
-        const details = document.getElementById('detailsContent');
-
         img.src = card.file;
 
-        // Populate Modal Content
+        // Pre-populate NOT needed here anymore, handled by showDecisionDetails
+        // But we leave it empty or default? No, better to purely rely on the click.
+
+        empty.classList.add('hidden');
+        container.classList.remove('hidden');
+
+        // Reset animation
+        container.style.animation = 'none';
+        container.offsetHeight;
+        container.style.animation = null;
+    }
+
+    const showDecisionDetails = () => {
+        if (!activeDecisionCard) return;
+
+        const card = activeDecisionCard;
+        const details = document.getElementById('detailsContent');
+
         details.innerHTML = `
             <div class="step-box step-check">
                 <p class="step-title">CONDICIÓN</p>
@@ -459,135 +478,54 @@ const UI = (function () {
                 <p style="color: #dba764;">➕ ${card.add}</p>
             </div>
         `;
-
-        empty.classList.add('hidden');
-        container.classList.remove('hidden');
-
-        // Reset animation
-        container.style.animation = 'none';
-        container.offsetHeight;
-        container.style.animation = null;
-    }
+        toggleModal('detailsModal');
+    };
 
     function resetCardArea() {
         document.getElementById('activeCardContainer').classList.add('hidden');
         document.getElementById('emptyState').classList.remove('hidden');
     }
 
-    // Initialize Rules Content
+    // Rules Pagination State
+    let currentRulePage = 1;
+    const totalRulePages = 6;
+
     function initRules() {
-        const rulesHTML = `
-            <div class="rules-section">
-                <h4>📜 1. Preparación (Setup)</h4>
-                <p><strong>Configuración General:</strong></p>
-                <ul>
-                    <li>Prepara el juego normalmente para ti (Harkonnen) y el oponente.</li>
-                    <li><strong>NO</strong> des al Automa: Tablero de jugador, Dados, ni Cartas de Planificación.</li>
-                </ul>
-                <p><strong>Componentes del Automa:</strong></p>
-                <ul>
-                    <li><strong>Mazo de Decisión:</strong> Baraja las 20 cartas. <strong>Retira las 2 superiores sin mirarlas</strong>. Coloca el resto boca abajo.</li>
-                    <li><strong>Mazo de Tácticas:</strong> Baraja las 8 cartas de Tácticas (del modo Mahdi Solo).</li>
-                    <li><strong>Mazo de Objetivos:</strong> Baraja las 8 cartas de Rastreo de Objetivo.</li>
-                    <li>Retira las cartas de Presciencia de "Fase de Fin de Ronda" y baraja las de "Fase de Resolución de Acción".</li>
-                    <li>El Automa comienza con 1 ficha Bene Gesserit.</li>
-                </ul>
-            </div>
+        const rulesContainer = document.getElementById('rulesContent');
+        renderRulePage(); // Initial render
+    }
 
-            <div class="rules-section">
-                <h4>🔄 2. Secuencia de Ronda</h4>
-                <ol>
-                    <li><strong>Inicio de la Ronda:</strong>
-                        <ul>
-                            <li>No robes cartas de Planificación ni Presciencia para el Automa.</li>
-                            <li>Descarta la carta de Objetivo de la ronda anterior (salvo en la R1).</li>
-                            <li>Roba y revela una nueva <strong>Carta de Objetivo</strong>.</li>
-                            <li>Baraja las cartas de Táctica de la ronda anterior (salvo en R1) para formar un nuevo mazo.</li>
-                            <li>Roba 1 Táctica para el <strong>Sietch Defensivo</strong> y 1 para el <strong>Sietch Ofensivo</strong>.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Movimiento de Legiones:</strong>
-                        <ul>
-                            <li>El destino nunca debe violar el límite de apilamiento. Si lo hiciera, elige el siguiente destino en prioridad.</li>
-                            <li>El Automa <strong>siempre mueve una legión completa</strong> (incluyendo líderes).</li>
-                            <li>Excepción: Si mover dejaría un Sietch vacío, deja 1 unidad (revela ficha de despliegue si es necesario).</li>
-                        </ul>
-                    </li>
-                    <li><strong>Despliegue:</strong>
-                        <ul>
-                            <li>Despliega <strong>tantas unidades y fichas como sea posible</strong>.</li>
-                            <li>La acción se considera completa aunque no se puedan desplegar todas.</li>
-                        </ul>
-                    </li>
-                </ol>
-            </div>
+    function renderRulePage() {
+        const rulesContainer = document.getElementById('rulesContent');
 
-            <div class="rules-section">
-                <h4>🤖 3. Anatomía de la Carta de Decisión</h4>
-                <div class="step-box step-check">
-                    <strong>1ª SECCIÓN (Condición):</strong>
-                    <br>Contiene la acción a realizar si se cumplen las condiciones de la bandera.
-                    <br><em>Los iconos bajo la línea punteada indican el DESEMPATE.</em>
+        const html = `
+            <div class="rules-navigation">
+                <button class="nav-btn" onclick="UI.changeRulePage(-1)" ${currentRulePage === 1 ? 'disabled' : ''}>⬅ Prev</button>
+                <span class="page-indicator">Página ${currentRulePage} / ${totalRulePages}</span>
+                <button class="nav-btn" onclick="UI.changeRulePage(1)" ${currentRulePage === totalRulePages ? 'disabled' : ''}>Next ➡</button>
+            </div>
+            
+            <div class="rules-gallery single-view">
+                <div class="rules-page active">
+                    <img src="rules_${currentRulePage}.jpg" 
+                         alt="Reglamento Página ${currentRulePage}" 
+                         onerror="this.src='placeholder_error.png'; this.alt='Error cargando imagen'"
+                         loading="eager">
                 </div>
-                
-                <div class="step-box step-action">
-                    <strong>2ª SECCIÓN (Else):</strong>
-                    <br>Contiene la acción a realizar si la 1ª Sección NO fue posible o no se cumplió.
-                </div>
-
-                <div class="step-box" style="border-left: 4px solid #dba764;">
-                    <strong>3ª SECCIÓN (Adicional):</strong>
-                    <br>Acciones adicionales que se ejecutan SIEMPRE después de completar una de las dos primeras.
-                </div>
-                
-                <p><strong>Notas Clave:</strong></p>
-                <ul>
-                    <li><strong>"Si puedes, eliges":</strong> Si hay múltiples opciones válidas para cumplir una condición, tú (el jugador) eliges la que sea <strong>peor para ti</strong> (o mejor para el Automa).</li>
-                    <li><strong>Marcadores:</strong> Los marcadores de Presciencia NO activan efectos por sí mismos. Solo las cartas lo hacen.</li>
-                </ul>
-            </div>
-
-            <div class="rules-section">
-                <h4>⚔️ 4. Batallas</h4>
-                <p>El Automa solo entra en combate si tiene al menos <strong>5 dados</strong> (o si es atacado). Si ataca y tiene menos, prefiere mover.</p>
-                
-                <p><strong>Valor de Combate (Dados):</strong></p>
-                <ul>
-                    <li>Se mide SOLO por el número de dados que genera la legión.</li>
-                    <li>Diferencia: No distingue entre élite/especial para contar dados, pero sí para bajas.</li>
-                    <li><strong>Defensa en Sietch:</strong> Suma el valor defensivo del Sietch al número de dados.</li>
-                </ul>
-
-                <p><strong>Secuencia de Batalla:</strong></p>
-                <ol>
-                    <li>Antes de tirar, puedes descartar cartas de Planificación para cambiar tus resultados.</li>
-                    <li>Luego, roba la siguiente Carta de Decisión y mira el símbolo <strong>⚔+1</strong> (abajo derecha 3ª sección).</li>
-                    <li>Si aparece, el Automa añade 1 dado (o más). Si ya tiene 6 dados, no tiene efecto.</li>
-                    <li>Repite esto en cada ronda de combate.</li>
-                </ol>
-
-                <p><strong>Prioridad de Bajas:</strong></p>
-                <ol>
-                    <li>Más de 1 Líder: Retira 1 Líder (genérico primero).</li>
-                    <li>1 Unidad de Élite: Reemplázala por Regular.</li>
-                    <li>1 Élite Especial: Reemplázala por Regular.</li>
-                    <li>1 Líder y al menos 2 Regulares: Retira 1 Regular.</li>
-                    <li>1 Líder y 1 Regular: Retira el Líder.</li>
-                    <li>Solo líderes nombrados van al Tanque de Regeneración.</li>
-                </ol>
-            </div>
-
-            <div class="rules-section">
-                <h4>🎯 5. Prioridades de Desempate</h4>
-                <p>Si la carta muestra iconos de desempate, úsalos en orden de izquierda a derecha:</p>
-                <ul>
-                    <li>🛡️/⚔️ <strong>Sietch:</strong> Ofensivo / Defensivo.</li>
-                    <li>📍 <strong>Norte:</strong> Legión/Gusano/Área más cercana al Polo Norte.</li>
-                    <li>🏭 <strong>Hagga Basin:</strong> Prioridad a esta región.</li>
-                </ul>
             </div>
         `;
-        document.getElementById('rulesContent').innerHTML = rulesHTML;
+
+        rulesContainer.innerHTML = html;
+        // Scroll to top of modal content to ensure visibility
+        rulesContainer.scrollTop = 0;
+    }
+
+    function changeRulePage(delta) {
+        const newPage = currentRulePage + delta;
+        if (newPage >= 1 && newPage <= totalRulePages) {
+            currentRulePage = newPage;
+            renderRulePage();
+        }
     }
 
     // Call initRules on load (or explicitly)
@@ -621,9 +559,11 @@ const UI = (function () {
         renderTactics,
         renderDecisionCard,
         showObjectiveDetails,
+        showDecisionDetails,
         resetCardArea,
         playVictoryVideo,
-        closeVideo
+        closeVideo,
+        changeRulePage
     };
 
 })();
