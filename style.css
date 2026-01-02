@@ -330,6 +330,15 @@ main {
     padding: 8px;
     border-radius: 6px;
     border: 1px solid #3e3e3e;
+    cursor: pointer;
+    /* Clickable indication */
+    transition: transform 0.2s, background 0.2s;
+}
+
+.tactic-item:hover {
+    transform: scale(1.02);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--dune-spice);
 }
 
 .tactic-mini {
@@ -1086,9 +1095,9 @@ footer {
 (min-width: 1024px) {
 
     body {
-        /* Ensure background fits nicely without scrolling if content fits */
-        height: 100vh;
-        overflow: hidden;
+        /* Allow scroll if content needs it */
+        min-height: 100vh;
+        overflow-y: auto;
     }
 
     /* Main Layout: Dashboard Style */
@@ -1099,8 +1108,7 @@ footer {
         gap: 30px;
         max-width: 1600px;
         margin: 0 auto;
-        overflow: hidden;
-        /* Manage internal scrolling */
+        /* Allow main to grow */
     }
 
     /* Sidebar (Left Panel) */
@@ -1139,7 +1147,6 @@ footer {
         align-items: center;
         padding: 20px;
         position: relative;
-        overflow: hidden;
     }
 
     /* Card Wrapper: Side by Side if needed, or just Big Centered */

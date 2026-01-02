@@ -126,11 +126,11 @@
                     <span>Tácticas</span>
                 </div>
                 <div class="card-content tactics-list">
-                    <div class="tactic-item">
+                    <div class="tactic-item" onclick="UI.expandCard('tactic', 0)">
                         <span class="icon">🛡️</span>
                         <img id="defSietchImg" class="tactic-mini" alt="Defensivo">
                     </div>
-                    <div class="tactic-item">
+                    <div class="tactic-item" onclick="UI.expandCard('tactic', 1)">
                         <span class="icon">⚔️</span>
                         <img id="offSietchImg" class="tactic-mini" alt="Ofensivo">
                     </div>
@@ -201,12 +201,12 @@
         </div>
     </div>
 
-    <!-- Expanded Objective Modal -->
-    <div id="objectiveModal" class="modal" onclick="if(event.target === this) UI.toggleModal('objectiveModal')">
+    <!-- Expanded Generic Image Modal -->
+    <div id="imageModal" class="modal" onclick="if(event.target === this) UI.toggleModal('imageModal')">
         <div class="modal-content">
-            <h3>Objetivo Actual</h3>
-            <img id="objImgLarge" src="" alt="Objetivo Grande" style="width: 100%; border-radius: 8px;">
-            <button class="close-btn" onclick="UI.toggleModal('objectiveModal')">Cerrar</button>
+            <h3 id="imageModalTitle">Detalle</h3>
+            <img id="imageModalImg" src="" alt="Detalle Grande"
+                style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="UI.toggleModal('imageModal')">
         </div>
     </div>
 
